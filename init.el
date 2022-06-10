@@ -1,0 +1,86 @@
+;; Add MELPA.
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(package-initialize)
+
+;; Create custom file
+(defconst custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; NOERROR to ignore nonexistent file - Emacs will create it
+(load custom-file t)
+
+;; Install use-package if doesn't exist
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Packages
+(use-package dracula-theme
+  :ensure t
+  :config
+  (load-theme 'dracula t)) ;; Using this theme
+
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p)
+  :config
+  (setq inhibit-compacting-font-caches t))
+
+(use-package neotree
+  :ensure t
+  :config
+  (require 'neotree)
+  (global-set-key [f8] 'neotree-toggle)
+  (display-line-numbers-mode nil)
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+
+(use-package centaur-tabs
+  :ensure t
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  (centaur-tabs-headline-match)
+  (setq centaur-tabs-style "bar")
+  (setq centaur-tabs-height 32)
+  (setq centaur-tabs-set-icons t)
+  :bind
+  ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Do not show the startup screen.
+(setq inhibit-startup-message t)
+
+;; Disable tool bar, menu bar, scroll bar.
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; Highlight current line.
+(global-hl-line-mode t)
+
+;; Customize cursor
+(setq-default cursor-type 'hollow)
+
+;; Numbered lines
+;(global-display-line-numbers-mode t)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+;; Turn off bell sounds
+(setq visible-bell t)
+
+;; Set transparent background
+(set-frame-parameter (selected-frame) 'alpha '(95 85))
+(add-to-list 'default-frame-alist '(alpha 95 85))
+
+
+(neotree-show)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Custom commands
+(defun einit ()
+  "Edit init file."
+  (interactive)
+  (find-file user-init-file))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
