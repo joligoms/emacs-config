@@ -14,21 +14,21 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; Always ensure packages are installed
+(setq use-package-always-ensure t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Packages
 (use-package dracula-theme
-  :ensure t
   :config
   (load-theme 'dracula t)) ;; Using this theme
 
 (use-package all-the-icons
-  :ensure t
   :if (display-graphic-p)
   :config
   (setq inhibit-compacting-font-caches t))
 
 (use-package neotree
-  :ensure t
   :config
   (require 'neotree)
   (global-set-key [f8] 'neotree-toggle)
@@ -36,7 +36,6 @@
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 (use-package centaur-tabs
-  :ensure t
   :demand
   :config
   (centaur-tabs-mode t)
