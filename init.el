@@ -1,13 +1,50 @@
-;; Add MELPA.
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
-(package-initialize)
+;; Disable tool bar, menu bar, scroll bar.
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; Set frame title to the file name with a major mode
+(setq-default frame-title-format '("%f [%m]"))
+
+;; Do not show the startup screen.
+(setq inhibit-startup-message t)
+
+;; Highlight current line.
+(global-hl-line-mode t)
+
+;; Customize cursor
+(setq-default cursor-type 'hollow)
+
+;; Numbered lines
+;(global-display-line-numbers-mode t)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+;; Turn off bell sounds
+(setq visible-bell t)
+
+;; Set transparent background
+(set-frame-parameter (selected-frame) 'alpha '(95 85))
+(add-to-list 'default-frame-alist '(alpha 95 85))
 
 ;; Create custom file
 (defconst custom-file (expand-file-name "custom.el" user-emacs-directory))
 ;; NOERROR to ignore nonexistent file - Emacs will create it
 (load custom-file t)
+
+;; Move backup files to a separate folder
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/emacs-backups/" user-emacs-directory))))
+
+;; auto-save-mode doesn't create the path automatically!
+(make-directory (expand-file-name "tmp/auto-saves/" user-emacs-directory) t)
+
+(setq auto-save-list-file-prefix (expand-file-name "tmp/auto-saves/sessions/" user-emacs-directory)
+      auto-save-file-name-transforms `((".*" ,(expand-file-name "tmp/auto-saves/" user-emacs-directory) t)))
+
+;; Add package repositories.
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(package-initialize)
 
 ;; Install use-package if doesn't exist
 (unless (package-installed-p 'use-package)
@@ -46,34 +83,13 @@
   :bind
   ("C-<prior>" . centaur-tabs-backward)
   ("C-<next>" . centaur-tabs-forward))
+
+(use-package minimap) 
+
+(use-package magit)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Do not show the startup screen.
-(setq inhibit-startup-message t)
-
-;; Disable tool bar, menu bar, scroll bar.
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-
-;; Highlight current line.
-(global-hl-line-mode t)
-
-;; Customize cursor
-(setq-default cursor-type 'hollow)
-
-;; Numbered lines
-;(global-display-line-numbers-mode t)
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-
-;; Turn off bell sounds
-(setq visible-bell t)
-
-;; Set transparent background
-(set-frame-parameter (selected-frame) 'alpha '(95 85))
-(add-to-list 'default-frame-alist '(alpha 95 85))
-
-
+;; Show neotree on startup
 (neotree-show)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
