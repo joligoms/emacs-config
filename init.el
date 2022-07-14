@@ -292,11 +292,11 @@
   (define-key emmet-mode-keymap (kbd "<tab>") 'emmet-tab)
   (define-key emmet-mode-keymap (kbd "C-j") #'newline-and-indent))
 
-;; Apparently identation guides on emacs aren't that great...
-;; (use-package highlight-indent-guides
-;;   :hook (prog-mode . highlight-indent-guides-mode)
-;;   :config
-;;   (setq highlight-indent-guides-method 'bitmap))
+(use-package highlight-indent-guides
+  :diminish
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method 'character))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Keybindings 
