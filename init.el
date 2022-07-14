@@ -234,6 +234,7 @@
   (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
 (use-package editorconfig
+  :diminish
   :config
   (editorconfig-mode 1))
 
