@@ -10,9 +10,10 @@
 (scroll-bar-mode -1)                 ; Disable scrollbar
 (menu-bar-mode -1)                   ; Disable menu bar
 (setq visible-bell t)                ; Use visible bell instead of audible bell
-(global-linum-mode t)
-(setq linum-format "%4d ")
-(setq-default line-spacing 1)
+(global-linum-mode t)                ; Enable numbered lines
+(setq linum-format "%4d ")           ; Line numbering padding
+(setq-default line-spacing 1)        ; Line vertical spacing
+(setq custom-file "/dev/null")       ; Prevent Custom from annoying me :P
 
 (electric-pair-mode t)
 (add-to-list 'electric-pair-pairs '(?\" . ?\"))
@@ -33,28 +34,41 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(expand-file-name "~/.emacs.d/autosave-files/") t)))
 
-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-
 (setq use-package-always-ensure t)
 
-;; (use-package monokai-theme
-;;   :config
-;;   (load-theme 'monokai t))
+;; Use-package Configuration ---------------------------------------------------------
 
+
+;; Loads Kanagawa theme
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes/"))
-
 (use-package autothemer
   :config
   (load-theme 'kanagawa t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package expand-region
+  :ensure t
+  :bind (("C-;" . er/expand-region)
+         ("M-\"" . er/mark-inside-quotes)
+         ("M-'" . er/mark-inside-quotes)))
+
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-startup-banner 'logo
+	dashboard-center-content t
+	dashboard-set-footer nil
+	dashboard-items '((recents . 5) ; show 5 recent files
+                        (projects . 5) ; show 5 recent projects
+                        )))
 
 (use-package treemacs
   :defer t
@@ -84,7 +98,9 @@
           treemacs-space-between-root-nodes   t
           treemacs-tag-follow-cleanup         t
           treemacs-tag-follow-delay           1.5
-          treemacs-width                      35)
+          treemacs-width                      35
+	  treemacs-icon-open-png (all-the-icons-octicon "chevron-down")
+	  treemacs-icon-closed-png (all-the-icons-octicon "chevron-right"))
     (treemacs-resize-icons 14)
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
@@ -95,25 +111,72 @@
       (`(t . _)
        (treemacs-git-mode 'simple)))))
 
+;; For doom-modeline configuration
+(use-package window-numbering)
+(use-package parrot)
+
+;; Enable icons in the modeline
+(use-package all-the-icons
+  :init
+  (when (not (member "all-the-icons" (font-family-list)))
+    (all-the-icons-install-fonts t))
+  :config
+  (setq inhibit-compacting-font-caches t))
+
+;; Add file icons to the modeline
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package all-the-icons-ibuffer
+  :init (all-the-icons-ibuffer-mode 1))
+
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-height 25
+        doom-modeline-bar-width 3
+        doom-modeline-lsp t
+        doom-modeline-buffer-file-name-style 'relative-from-project
+        doom-modeline-enable-word-count t
+        doom-modeline-buffer-encoding nil
+        doom-modeline-indent-info t
+        doom-modeline-buffer-state-icon t
+        doom-modeline-modal-icon t
+        doom-modeline-github nil
+        doom-modeline-enable-python-executable nil
+        doom-modeline-env-version nil
+        doom-modeline-enable-minor-modes t
+        doom-modeline-major-mode-icon t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-modification-icon t
+        doom-modeline-modal-icon nil
+        doom-modeline-window-width-limit fill-column
+        doom-modeline-buffer-encoding-icon t
+        doom-modeline-icon (display-graphic-p)
+        doom-modeline-persp-name nil
+        doom-modeline-persp-icon t)
+  (doom-modeline-def-modeline 'main
+    '(bar workspace-name window-number matches buffer-info buffer-position word-count parrot selection-info)
+    '(misc-info battery grip irc mu4e gnus github debug minor-modes input-method indent-info major-mode process vcs checker)))
+
 (defun toggle-treemacs ()
   (interactive)
   (if (treemacs-is-treemacs-window-selected?)
       (delete-window (treemacs-get-local-window))
-    (progn
-      (treemacs-select-window)
-      (treemacs--follow-selected-file))))
-
+      (progn
+	(treemacs-select-window)
+	(treemacs--follow-selected-file))))
 (global-set-key (kbd "C-c t") 'toggle-treemacs)
 
-(use-package projectile
-  :config
-  (projectile-mode 1))
-
 (use-package counsel-projectile
-  :ensure t
-  :after projectile
+  :after projectile counsel
   :bind (("C-c C-r" . counsel-projectile-rg)
-	 ("C-c C-f" . counsel-projectile-find-file)))
+         ("C-c C-f" . counsel-projectile-find-file))
+  :hook ((after-init . counsel-projectile-mode)
+	 (prog-mode . counsel-projectile-mode)
+	 (php-mode . counsel-projectile-mode))
+  :config
+  (counsel-projectile-mode))
 
 (use-package treemacs-projectile
   :after treemacs projectile
@@ -145,6 +208,23 @@
   :config
   (setq swiper-action-recenter t))
 
+(use-package yasnippet
+  :init
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets)
+
+(use-package company-quickhelp
+  :after company
+  :init
+  (setq company-quickhelp-delay nil) ;; Show pop-up immediately
+  (setq company-quickhelp-mode 1)
+  (setq company-quickhelp-padding 10)) ;; Set padding to 10 pixels)
+
+(use-package company-statistics
+  :config
+  (company-statistics-mode))
+
 (use-package company
   :hook (after-init . global-company-mode)
   :config
@@ -159,9 +239,22 @@
   (setq company-tooltip-maximum-width 60)
   (setq company-tooltip-limit 10)
   (setq company-tooltip-align-annotations t)
+  (setq company-backends '(company-capf company-dabbrev-code company-yasnippet))
   (setq company-frontends
         '(company-pseudo-tooltip-frontend
           company-echo-metadata-frontend)))
+
+(use-package company-box
+  :after company
+  :hook (company-mode . company-box-mode)
+  :config
+  (setq company-tooltip-idle-delay 0.5
+	company-tooltip-limit 20
+	company-box-doc-enable t
+        company-box-doc-delay 0.5
+        company-box-backends-colors nil
+        company-box-show-single-candidate t
+	company-box-doc-frame-parameters '((internal-border-width . 10))))
 
 ;; Install and enable LSP mode
 (use-package lsp-mode
@@ -202,19 +295,37 @@
   )
 
 ;; Add Laravel specific modes
-(use-package php-mode)
+(use-package php-mode
+  :bind (:map php-mode-map
+	      ("C-c C-r" . nil)
+	      ("C-c C-f" . nil))
+  :hook ((php-mode . counsel-projectile-mode)))
 (use-package web-mode)
 (use-package vue-mode)
 
+(use-package saveplace
+  :config
+  (setq-default save-place t)
+  (setq save-place-file (concat user-emacs-directory "places")))
+
 ;; Use projectile for project navigation
 (use-package projectile
+  :after saveplace
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :config
   (setq projectile-completion-system 'ivy)
-  (projectile-mode +1))
+  (projectile-mode +1)
+  (setq projectile-remember-window-configs t)
+  ;; Set frame title format
+  (setq frame-title-format
+	'("%b"
+	  (:eval (if (projectile-project-p)
+		     (format " - %s" (projectile-project-name))
+		   ""))
+	  " - Emacs")))
 
-;; Use magit for Git integration
+;; Use magit for Git integratio
 (use-package magit
   :bind (("C-x g" . magit-status)))
 
@@ -229,12 +340,6 @@
   (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
-
-;; Use treemacs for file tree navigation
-(use-package treemacs
-  :defer t
-  :config
-  (setq treemacs-no-png-images t))
 
 ;; Use which-key for keybinding discovery
 (use-package which-key
