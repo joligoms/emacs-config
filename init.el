@@ -57,6 +57,10 @@
         eshell-cmpl-cycle-completions nil
         eshell-cmpl-ignore-case t))
 
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+
 (global-set-key (kbd "C-c e") 'eshell)
 
 (use-package autothemer
@@ -76,10 +80,10 @@
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-startup-banner 'logo
+	dashboard-footer-messages '("Happy hacking!")
 	dashboard-center-content t
-	dashboard-set-footer nil
-	dashboard-items '((recents . 5) ; show 5 recent files
-                        (projects . 5) ; show 5 recent projects
+	dashboard-items '((recents . 8) ; show 8 recent files
+                        (projects . 8) ; show 8 recent projects
                         )))
 
 (use-package treemacs
@@ -125,7 +129,9 @@
 
 ;; For doom-modeline configuration
 (use-package window-numbering)
-(use-package parrot)
+(use-package nyan-mode
+  :init
+  (nyan-mode))
 
 ;; Enable icons in the modeline
 (use-package all-the-icons
@@ -149,6 +155,7 @@
         doom-modeline-bar-width 3
         doom-modeline-lsp t
         doom-modeline-buffer-file-name-style 'relative-from-project
+	doom-modeline-percent-position nil
         doom-modeline-enable-word-count t
         doom-modeline-buffer-encoding nil
         doom-modeline-indent-info t
@@ -168,7 +175,7 @@
         doom-modeline-persp-name nil
         doom-modeline-persp-icon t)
   (doom-modeline-def-modeline 'main
-    '(bar workspace-name window-number matches buffer-info buffer-position word-count parrot selection-info)
+    '(bar workspace-name window-number matches buffer-info buffer-position word-count selection-info)
     '(misc-info battery grip irc mu4e gnus github debug minor-modes input-method indent-info major-mode process vcs checker)))
 
 (defun toggle-treemacs ()
