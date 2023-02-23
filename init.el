@@ -47,6 +47,18 @@
 
 ;; Loads Kanagawa theme
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes/"))
+
+(use-package eshell
+  :config
+  (setq eshell-aliases-file "~/.zsh/zshrc.d/alias.zsh"
+        eshell-history-size 10000
+        eshell-hist-ignoredups t
+        eshell-save-history-on-exit t
+        eshell-cmpl-cycle-completions nil
+        eshell-cmpl-ignore-case t))
+
+(global-set-key (kbd "C-c e") 'eshell)
+
 (use-package autothemer
   :config
   (load-theme 'kanagawa t))
@@ -193,6 +205,14 @@
         ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   (ivy-mode 1))
 
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :ensure t
+  :init (ivy-rich-mode 1))
+
 (use-package counsel
   :ensure t
   :bind (("M-x" . counsel-M-x)
@@ -299,7 +319,13 @@
   :bind (:map php-mode-map
 	      ("C-c C-r" . nil)
 	      ("C-c C-f" . nil))
-  :hook ((php-mode . counsel-projectile-mode)))
+  :hook ((php-mode . counsel-projectile-mode)
+	 (php-mode . (lambda ()
+                (setq-local imenu-generic-expression
+                            '((nil "^\\s-*function\\s-+\\([^ ]+\\)" 1)))
+                (define-key php-mode-map (kbd "M-i") 'counsel-imenu)
+		(all-the-icons-ivy-setup)))))
+
 (use-package web-mode)
 (use-package vue-mode)
 
