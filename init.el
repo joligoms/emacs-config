@@ -48,14 +48,7 @@
 ;; Loads Kanagawa theme
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes/"))
 
-(use-package eshell
-  :config
-  (setq eshell-aliases-file "~/.zsh/zshrc.d/alias.zsh"
-        eshell-history-size 10000
-        eshell-hist-ignoredups t
-        eshell-save-history-on-exit t
-        eshell-cmpl-cycle-completions nil
-        eshell-cmpl-ignore-case t))
+(use-package eshell)
 
 (use-package editorconfig
   :config
@@ -71,7 +64,6 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package expand-region
-  :ensure t
   :bind (("C-;" . er/expand-region)
          ("M-\"" . er/mark-inside-quotes)
          ("M-'" . er/mark-inside-quotes)))
@@ -129,6 +121,24 @@
 
 ;; For doom-modeline configuration
 (use-package window-numbering)
+(use-package winum
+  :init
+  (setq winum-keymap
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "C-`") 'winum-select-window-by-number)
+      (define-key map (kbd "C-²") 'winum-select-window-by-number)
+      (define-key map (kbd "M-0") 'winum-select-window-0-or-10)
+      (define-key map (kbd "M-1") 'winum-select-window-1)
+      (define-key map (kbd "M-2") 'winum-select-window-2)
+      (define-key map (kbd "M-3") 'winum-select-window-3)
+      (define-key map (kbd "M-4") 'winum-select-window-4)
+      (define-key map (kbd "M-5") 'winum-select-window-5)
+      (define-key map (kbd "M-6") 'winum-select-window-6)
+      (define-key map (kbd "M-7") 'winum-select-window-7)
+      (define-key map (kbd "M-8") 'winum-select-window-8)
+      map))
+  :config
+  (winum-mode))
 (use-package nyan-mode
   :init
   (nyan-mode))
@@ -203,7 +213,6 @@
   (setq treemacs-header-function #'treemacs-projectile-create-header))
 
 (use-package ivy
-  :ensure t
   :diminish ivy-mode
   :config
   (setq ivy-use-virtual-buffers t
@@ -213,15 +222,12 @@
   (ivy-mode 1))
 
 (use-package all-the-icons-ivy-rich
-  :ensure t
   :init (all-the-icons-ivy-rich-mode 1))
 
 (use-package ivy-rich
-  :ensure t
   :init (ivy-rich-mode 1))
 
 (use-package counsel
-  :ensure t
   :bind (("M-x" . counsel-M-x)
          ("C-x C-f" . counsel-find-file)
          ("C-x b" . counsel-switch-buffer)
@@ -230,7 +236,6 @@
   (setq ivy-initial-inputs-alist nil))
 
 (use-package swiper
-  :ensure t
   :bind (("C-s" . swiper))
   :config
   (setq swiper-action-recenter t))
@@ -334,7 +339,10 @@
 		(all-the-icons-ivy-setup)))))
 
 (use-package web-mode)
-(use-package vue-mode)
+(use-package vue-mode
+  :mode "\\.vue\\'"
+  :hook (mmm-mode . (lambda ()
+		       (set-face-background 'mmm-default-submode-face nil))))
 
 (use-package saveplace
   :config
@@ -361,6 +369,13 @@
 ;; Use magit for Git integratio
 (use-package magit
   :bind (("C-x g" . magit-status)))
+
+(add-hook 'magit-post-command-hook
+          (lambda ()
+            "Refresh the current buffer if it's showing a file."
+            (when buffer-file-name
+              (revert-buffer t t))))
+
 
 (use-package git-gutter
   :hook (prog-mode . git-gutter-mode)
