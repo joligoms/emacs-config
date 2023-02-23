@@ -11,7 +11,19 @@
 (menu-bar-mode -1)                   ; Disable menu bar
 (setq visible-bell t)                ; Use visible bell instead of audible bell
 (global-linum-mode t)
-(setq linum-format "%3d ")
+(setq linum-format "%4d ")
+(setq-default line-spacing 1)
+
+(electric-pair-mode t)
+(add-to-list 'electric-pair-pairs '(?\" . ?\"))
+(add-to-list 'electric-pair-pairs '(?\' . ?\'))
+(add-to-list 'electric-pair-pairs '(?\{ . ?\}))
+(setq electric-pair-delay 0.5)
+
+(custom-set-faces
+ '(default ((t (:inherit nil :stipple nil :background "#181820" :foreground "#DCD7BA" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
+ '(font-lock-keyword-face ((t (:foreground "#957FB8" :weight normal))))
+ '(font-lock-string-face ((t (:foreground "#98BB6C" :slant normal)))))
 
 ;; Create a directory for autosave files
 (unless (file-exists-p "~/.emacs.d/autosave-files")
@@ -31,9 +43,15 @@
 
 (setq use-package-always-ensure t)
 
-(use-package monokai-theme
+;; (use-package monokai-theme
+;;   :config
+;;   (load-theme 'monokai t))
+
+(add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes/"))
+
+(use-package autothemer
   :config
-  (load-theme 'monokai t))
+  (load-theme 'kanagawa t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -200,6 +218,18 @@
 (use-package magit
   :bind (("C-x g" . magit-status)))
 
+(use-package git-gutter
+  :hook (prog-mode . git-gutter-mode)
+  :config
+  (setq git-gutter:update-interval 0.02))
+
+(use-package git-gutter-fringe
+  :config
+  (global-git-gutter-mode t)
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
+
 ;; Use treemacs for file tree navigation
 (use-package treemacs
   :defer t
@@ -215,24 +245,10 @@
 (use-package flycheck
   :init (global-flycheck-mode)
   :config
-  (setq flycheck-mode-line-prefix " "))
+  (setq flycheck-indication-mode nil))
 
 ;; Add additional useful packages
 (use-package yaml-mode)
 (use-package markdown-mode)
 (use-package json-mode)
 (use-package toml-mode)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (company-lsp lsp-ui yaml-mode which-key web-mode vue-mode use-package treemacs-projectile toml-mode rainbow-delimiters php-mode neotree monokai-theme minimap magit lsp-mode json-mode flycheck counsel-projectile company))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
