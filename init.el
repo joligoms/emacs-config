@@ -280,6 +280,9 @@
   :after company
   :hook (company-mode . company-box-mode)
   :config
+  (custom-set-faces
+   `(company-box-selection ((t (:background ,(face-background 'highlight))))))
+
   (setq company-tooltip-idle-delay 0.5
 	company-tooltip-limit 20
 	company-box-doc-enable t
