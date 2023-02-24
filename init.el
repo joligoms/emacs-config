@@ -306,19 +306,18 @@
 ;; Install and enable LSP mode
 (use-package lsp-mode
   :commands lsp
-  :hook ((php-mode . lsp)
-         (web-mode . lsp)
-         (vue-mode . lsp))
+  :hook ((php-mode . lsp-deferred)
+         (web-mode . lsp-deferred)
+         (vue-mode . lsp-deferred))
   :init
   (setq lsp-prefer-flymake nil)
   :config
   (setq lsp-enable-file-watchers nil
         lsp-prefer-flymake nil
+	lsp-prefer-capf nil
         lsp-auto-guess-root t
         lsp-response-timeout 5
-        lsp-completion-provider :capf)
-  ;; PHP
-  (add-hook 'php-mode-hook #'lsp)
+        lsp-completion-provider :company)
   (setq lsp-intelephense-configuration
       `(:intelephense-binary-path ,(executable-find "intelephense")))
   (setq lsp-intelephense-server-command '("intelephense" "--stdio"))
@@ -327,6 +326,7 @@
   (setq lsp-vetur-use-workspace-dependencies t))
 
 (use-package lsp-ui
+  :hook (lsp-deferred . lsp-ui-mode)
   :commands lsp-ui-mode
   :config
   (setq lsp-ui-doc-position 'top
@@ -341,18 +341,19 @@
         lsp-ui-flycheck-enable t)
   )
 
-;; Add Laravel specific modes
+(use-package company-lsp
+  :commands company-lsp)
+
+;; Some major modes
 (use-package php-mode
   :bind (:map php-mode-map
 	      ("C-c C-r" . nil)
 	      ("C-c C-f" . nil))
-  :hook ((php-mode . counsel-projectile-mode)
-	 (php-mode . (lambda ()
-                (setq-local imenu-generic-expression
-                            '((nil "^\\s-*function\\s-+\\([^ ]+\\)" 1)))
-                (define-key php-mode-map (kbd "M-i") 'counsel-imenu)
-		(all-the-icons-ivy-setup)))))
-
+  :hook ((php-mode . counsel-projectile-mode)))
+(use-package dotenv-mode
+  :mode (("\\.env\\..*\\'" . dotenv-mode))
+  :config
+  (setq dotenv-mode-indent-offset 2))
 (use-package web-mode)
 (use-package vue-mode
   :mode "\\.vue\\'"
