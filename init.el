@@ -5,6 +5,10 @@
 
 (global-set-key (kbd "<f5>") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 
+;; This will increase the garbage collection threshold to 100 MB.
+(setq gc-cons-threshold (* 100 1024 1024))
+
+
 (setq inhibit-startup-message t)     ; Disable startup message
 (tool-bar-mode -1)                   ; Disable toolbar
 (scroll-bar-mode -1)                 ; Disable scrollbar
