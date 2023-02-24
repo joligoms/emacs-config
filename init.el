@@ -10,10 +10,16 @@
 (scroll-bar-mode -1)                 ; Disable scrollbar
 (menu-bar-mode -1)                   ; Disable menu bar
 (setq visible-bell t)                ; Use visible bell instead of audible bell
-(global-linum-mode t)                ; Enable numbered lines
 (setq linum-format "%4d ")           ; Line numbering padding
 (setq-default line-spacing 1)        ; Line vertical spacing
 (setq custom-file "/dev/null")       ; Prevent Custom from annoying me :P
+(global-linum-mode t)                ; Enable numbered lines
+
+(defun my-inhibit-global-linum-mode ()
+  "Counter-act `global-linum-mode'."
+  (add-hook 'after-change-major-mode-hook
+            (lambda () (linum-mode 0))
+            :append :local))
 
 (electric-pair-mode t)
 (add-to-list 'electric-pair-pairs '(?\" . ?\"))
@@ -48,7 +54,9 @@
 ;; Loads Kanagawa theme
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes/"))
 
-(use-package eshell)
+(use-package eshell
+  :config
+  (add-hook 'eshell-mode-hook 'my-inhibit-global-linum-mode))
 
 (use-package editorconfig
   :config
@@ -82,6 +90,7 @@
   :defer t
   :init
   :config
+  (add-hook 'treemacs-mode-hook 'my-inhibit-global-linum-mode)
   (progn
     (setq treemacs-collapse-dirs              (if (executable-find "python") 3 0)
           treemacs-deferred-git-apply-delay   0.5
@@ -245,13 +254,6 @@
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets)
-
-(use-package company-quickhelp
-  :after company
-  :init
-  (setq company-quickhelp-delay nil) ;; Show pop-up immediately
-  (setq company-quickhelp-mode 1)
-  (setq company-quickhelp-padding 10)) ;; Set padding to 10 pixels)
 
 (use-package company-statistics
   :config
