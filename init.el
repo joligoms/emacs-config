@@ -36,13 +36,19 @@
  '(font-lock-keyword-face ((t (:foreground "#957FB8" :weight normal))))
  '(font-lock-string-face ((t (:foreground "#98BB6C" :slant normal)))))
 
-;; Create a directory for autosave files
-(unless (file-exists-p "~/.emacs.d/autosave-files")
-  (make-directory "~/.emacs.d/autosave-files"))
+;; Create a directory for autosave files if it doesn't already exist
+(make-directory "~/.emacs.d/autosave-files" t)
 
 ;; Save autosave files in the autosave-files directory
 (setq auto-save-file-name-transforms
       `((".*" ,(expand-file-name "~/.emacs.d/autosave-files/") t)))
+
+;; Create a directory for backup files if it doesn't already exist
+(make-directory "~/.emacs.d/backup-files" t)
+
+;; Save backup files in the backup-files directory
+(setq backup-directory-alist
+      `((".*" . ,(expand-file-name "~/.emacs.d/backup-files/"))))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
