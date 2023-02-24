@@ -282,11 +282,7 @@
   (setq company-tooltip-minimum-width 60)
   (setq company-tooltip-maximum-width 60)
   (setq company-tooltip-limit 10)
-  (setq company-tooltip-align-annotations t)
-  (setq company-backends '(company-capf company-dabbrev-code company-yasnippet))
-  (setq company-frontends
-        '(company-pseudo-tooltip-frontend
-          company-echo-metadata-frontend)))
+  (setq company-tooltip-align-annotations t))
 
 (use-package company-box
   :after company
@@ -297,6 +293,8 @@
 
   (setq company-tooltip-idle-delay 0.5
 	company-tooltip-limit 20
+	company-idle-delay 0.2
+	company-box-max-candidates 30
 	company-box-doc-enable t
         company-box-doc-delay 0.5
         company-box-backends-colors nil
