@@ -19,6 +19,10 @@
 (setq custom-file "/dev/null")       ; Prevent Custom from annoying me :P
 (global-linum-mode t)                ; Enable numbered lines
 
+;; Removes the window (window as the window from the desktop environment) titlebar.
+(setq default-frame-alist
+      '((undecorated . t)))
+
 (set-frame-parameter (selected-frame) 'alpha '(98 98))
 (add-to-list 'default-frame-alist '(alpha . (98 98)))
 
