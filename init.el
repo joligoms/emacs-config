@@ -67,15 +67,11 @@
 ;; Loads Kanagawa theme
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory "themes/"))
 
-(use-package eshell
-  :config
-  (add-hook 'eshell-mode-hook 'my-inhibit-global-linum-mode))
-
 (use-package editorconfig
   :config
   (editorconfig-mode 1))
 
-(global-set-key (kbd "C-c e") 'eshell)
+(global-set-key (kbd "C-c s") 'shell)
 
 (use-package autothemer
   :config
