@@ -319,7 +319,7 @@
   :config
   (setq lsp-enable-file-watchers nil
         lsp-prefer-flymake nil
-	lsp-prefer-capf nil
+	lsp-prefer-capf t
         lsp-auto-guess-root t
         lsp-response-timeout 5
         lsp-completion-provider :company)
