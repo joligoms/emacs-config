@@ -351,6 +351,17 @@
 	      ("C-c C-r" . nil)
 	      ("C-c C-f" . nil))
   :hook ((php-mode . counsel-projectile-mode)))
+
+(defun my-php-mode-hook ()
+  (setq indent-tabs-mode nil
+        tab-width 4
+        c-basic-offset 4
+        php-mode-coding-style 'psr2
+        php-mode-heredoc-indent-offset tab-width
+        php-mode-indent-style 'psr2))
+
+(add-hook 'php-mode-hook 'my-php-mode-hook)
+
 (use-package dotenv-mode
   :mode (("\\.env\\..*\\'" . dotenv-mode))
   :config
