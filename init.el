@@ -19,8 +19,8 @@
 (setq custom-file "/dev/null")       ; Prevent Custom from annoying me :P
 (global-linum-mode t)                ; Enable numbered lines
 
-(set-frame-parameter (selected-frame) 'alpha '(98 70))
-(add-to-list 'default-frame-alist '(alpha . (98 70)))
+(set-frame-parameter (selected-frame) 'alpha '(98 98))
+(add-to-list 'default-frame-alist '(alpha . (98 98)))
 
 (defun my-inhibit-global-linum-mode ()
   "Counter-act `global-linum-mode'."
