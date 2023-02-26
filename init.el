@@ -75,6 +75,10 @@
   :config
   (editorconfig-mode 1))
 
+(use-package hungry-delete
+  :config
+  (global-hungry-delete-mode))
+
 (global-set-key (kbd "C-c s") 'shell)
 
 (use-package autothemer
