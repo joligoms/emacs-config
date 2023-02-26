@@ -379,7 +379,7 @@
 		   ""))
 	  " - Emacs")))
 
-;; Use magit for Git integratio
+;; magit is to freaking good omg!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (use-package magit
   :bind (("C-x g" . magit-status)))
 
