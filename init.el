@@ -8,6 +8,7 @@
 ;; This will increase the garbage collection threshold to 100 MB.
 (setq gc-cons-threshold (* 100 1024 1024))
 
+;; Useful command when emacs gets stuck: $ killall -USR2 emacs
 
 (setq inhibit-startup-message t)     ; Disable startup message
 (tool-bar-mode -1)                   ; Disable toolbar
