@@ -192,6 +192,8 @@
         doom-modeline-bar-width 3
         doom-modeline-lsp t
         doom-modeline-buffer-file-name-style 'relative-from-project
+	doom-modeline-buffer-file-name-limit 10
+	doom-modeline-buffer-file-name-truncation-style 'middle
 	doom-modeline-percent-position nil
         doom-modeline-enable-word-count t
         doom-modeline-buffer-encoding nil
@@ -212,7 +214,7 @@
         doom-modeline-persp-name nil
         doom-modeline-persp-icon t)
   (doom-modeline-def-modeline 'main
-    '(bar workspace-name window-number matches buffer-info buffer-position word-count selection-info)
+    '(bar window-number matches buffer-info buffer-position word-count selection-info)
     '(misc-info battery grip irc mu4e gnus github debug minor-modes input-method indent-info major-mode process vcs checker)))
 
 (defun toggle-treemacs ()
