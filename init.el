@@ -376,6 +376,17 @@
   :mode "\\.vue\\'"
   :hook (mmm-mode . (lambda ()
 		       (set-face-background 'mmm-default-submode-face nil))))
+(use-package elixir-mode
+  :hook
+  (elixir-mode . inf-elixir-minor-mode))
+
+(use-package inf-elixir
+  :bind (("C-c e i" . 'inf-elixir)
+         ("C-c e p" . 'inf-elixir-project)
+         ("C-c e l" . 'inf-elixir-send-line)
+         ("C-c e r" . 'inf-elixir-send-region)
+         ("C-c e b" . 'inf-elixir-send-buffer)
+         ("C-c e R" . 'inf-elixir-reload-module)))
 
 (use-package saveplace
   :config
