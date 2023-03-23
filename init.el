@@ -376,8 +376,19 @@
 (use-package web-mode)
 (use-package vue-mode
   :mode "\\.vue\\'"
-  :hook (mmm-mode . (lambda ()
-		       (set-face-background 'mmm-default-submode-face nil))))
+  :bind
+  (:map vue-html-mode-map
+	("C-c C-r" . nil)
+	("C-c C-f" . nil))
+  (:map vue-mode-map
+	("C-c C-r" . nil)
+	("C-c C-f" . nil))
+  :hook
+  (mmm-mode . (lambda ()
+		(set-face-background 'mmm-default-submode-face nil)))
+  (vue-mode . counsel-projectile-mode)
+  (vue-html-mode . counsel-projectile-mode))
+
 (use-package elixir-mode
   :hook
   (elixir-mode . inf-elixir-minor-mode))
